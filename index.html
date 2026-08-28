@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Kesehatan Personal</title>
+    <!-- Framework Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen py-8 px-4 font-sans">
+
+    <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+        <!-- Header -->
+        <div class="bg-teal-600 p-6 text-white text-center">
+            <h1 class="text-2xl font-bold">Aplikasi Kesehatan Personal</h1>
+            <p class="text-teal-100 text-sm mt-1">Hitung Indeks Massa Tubuh (BMI) & Kebutuhan Air Harian Anda</p>
+        </div>
+
+        <!-- Form Input -->
+        <div class="p-6 space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                <input type="text" id="nama" placeholder="Masukkan nama Anda" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Berat Badan (kg)</label>
+                    <input type="number" id="berat" placeholder="Contoh: 65" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tinggi Badan (cm)</label>
+                    <input type="number" id="tinggi" placeholder="Contoh: 170" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none">
+                </div>
+            </div>
+
+            <button onclick="hitungKesehatan()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 rounded-lg transition duration-200">
+                Analisis Kesehatan
+            </button>
+        </div>
+
+        <!-- Hasil Output (Hidden secara default) -->
+        <div id="hasilSection" class="hidden border-t border-gray-100 p-6 bg-slate-50 space-y-4">
+            <h2 id="sapaan" class="text-lg font-bold text-gray-800"></h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- BMI Card -->
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                    <span class="text-xs font-semibold text-teal-600 uppercase tracking-wider">Status BMI</span>
+                    <div id="nilaiBMI" class="text-3xl font-extrabold text-gray-800 mt-1">0.0</div>
+                    <div id="kategoriBMI" class="text-sm font-medium mt-1"></div>
+                </div>
+
+                <!-- Water Card -->
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                    <span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">Kebutuhan Air Harian</span>
+                    <div id="kebutuhanAir" class="text-3xl font-extrabold text-gray-800 mt-1">0.0 L</div>
+                    <p class="text-xs text-gray-500 mt-1">~35 ml per kg berat badan</p>
+                </div>
+            </div>
+
+            <!-- Pesan / Anjuran -->
+            <div id="pesanSaran" class="p-4 rounded-xl text-sm leading-relaxed"></div>
+        </div>
+    </div>
+
+    <!-- Script Logika -->
+    <script>
+        function hitungKesehatan() {
+            const nama = document.getElementById('nama').value.trim();
+            const berat = parseFloat(document.getElementById('berat').value);
+            const tinggiCm = parseFloat(document.getElementById('tinggi').value);
+
+            // Validasi Input
+            if (!nama || isNaN(berat) || isNaN(tinggiCm) || berat <= 0 || tinggiCm <= 0) {
+                alert('Silakan isi semua data dengan benar!');
+                return;
+            }
+
+            // Hitung BMI
+            const tinggiM = tinggiCm / 100;
+            const bmi = berat / (tinggiM * tinggiM);
+
+            // Hitung Air Harian (35ml per kg)
+            const airLiter = (berat * 35) / 1000;
+
+            // Kategori BMI & Styling
+            let kategori = '';
+            let warnaKategori = '';
+            let saran = '';
+
+            if (bmi < 18.5) {
+                kategori = 'Underweight (Kekurangan Berat Badan)';
+                warnaKategori = 'text-yellow-600';
+                saran = 'Kategori Anda menunjukkan berat badan kurang. Tingkatkan asupan nutrisi seimbang dan tambahkan asupan kalori sehat.';
+            } else if (bmi >= 18.5 && bmi < 24.9) {
+                kategori = 'Normal (Ideal)';
+                warnaKategori = 'text-green-600';
+                saran = 'Selamat! Berat badan Anda berada di rentang ideal. Pertahankan pola makan sehat dan olahraga teratur.';
+            } else if (bmi >= 25 && bmi < 29.9) {
+                kategori = 'Overweight (Kelebihan Berat Badan)';
+                warnaKategori = 'text-orange-600';
+                saran = 'Anda mengalami kelebihan berat badan. Pertimbangkan untuk mengatur pola makan rendah gula/lemak dan rutin berolahraga.';
+            } else {
+                kategori = 'Obesitas';
+                warnaKategori = 'text-red-600';
+                saran = 'Kategori Anda tergolong obesitas. Disarankan untuk berkonsultasi dengan profesional kesehatan untuk pola penurunan berat badan yang aman.';
+            }
+
+            // Tampilkan Hasil ke UI
+            document.getElementById('sapaan').innerText = `Hasil Analisis untuk ${nama}:`;
+            document.getElementById('nilaiBMI').innerText = bmi.toFixed(1);
+            
+            const elKategori = document.getElementById('kategoriBMI');
+            elKategori.innerText = kategori;
+            elKategori.className = `text-sm font-medium mt-1 ${warnaKategori}`;
+
+            document.getElementById('kebutuhanAir').innerText = `${airLiter.toFixed(1)} Liter`;
+
+            const elSaran = document.getElementById('pesanSaran');
+            elSaran.innerText = saran;
+            elSaran.className = `p-4 rounded-xl text-sm leading-relaxed bg-teal-50 text-teal-900 border border-teal-200`;
+
+            // Unhide section hasil
+            document.getElementById('hasilSection').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
