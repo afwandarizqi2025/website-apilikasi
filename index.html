@@ -127,3 +127,193 @@
     </script>
 </body>
 </html>
+
+<div class="bg-white p-6 rounded-2xl shadow-lg max-w-md mx-auto my-4 border border-slate-100">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="font-bold text-gray-800 text-lg">Tracker Minum Air</h3>
+        <span id="targetAir" class="text-sm font-semibold text-blue-600">0 / 2000 ml</span>
+    </div>
+    
+    <!-- Progress Bar -->
+    <div class="w-full bg-slate-100 rounded-full h-4 mb-4 overflow-hidden">
+        <div id="progressBarAir" class="bg-blue-500 h-full w-0 transition-all duration-300"></div>
+    </div>
+
+    <!-- Tombol Aksi -->
+    <div class="grid grid-cols-3 gap-2">
+        <button onclick="tambahAir(250)" class="bg-blue-50 hover:bg-blue-100 text-blue-600 font-semibold py-2 rounded-lg text-sm border border-blue-200">
+            +1 Gelas (250ml)
+        </button>
+        <button onclick="tambahAir(500)" class="bg-blue-50 hover:bg-blue-100 text-blue-600 font-semibold py-2 rounded-lg text-sm border border-blue-200">
+            +Botol (500ml)
+        </button>
+        <button onclick="resetAir()" class="bg-slate-100 hover:bg-slate-200 text-gray-600 font-semibold py-2 rounded-lg text-sm">
+            Reset
+        </button>
+    </div>
+</div>
+
+<script>
+let totalAir = 0;
+const targetHarian = 2000;
+
+function tambahAir(jumlah) {
+    totalAir += jumlah;
+    if (totalAir > targetHarian) totalAir = targetHarian;
+    updateUI();
+}
+
+function resetAir() {
+    totalAir = 0;
+    updateUI();
+}
+
+function updateUI() {
+    document.getElementById('targetAir').innerText = `${totalAir} / ${targetHarian} ml`;
+    const persentase = (totalAir / targetHarian) * 100;
+    document.getElementById('progressBarAir').style.width = `${persentase}%`;
+}
+</script>
+
+<div class="bg-white p-6 rounded-2xl shadow-lg max-w-md mx-auto my-4 border border-slate-100">
+    <h3 class="font-bold text-gray-800 text-lg mb-3">Pengingat Minum Obat</h3>
+    
+    <!-- Input Obat -->
+    <div class="flex gap-2 mb-4">
+        <input type="text" id="namaObat" placeholder="Nama obat (misal: Paracetamol)" class="flex-1 px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+        <input type="time" id="jamObat" class="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500">
+        <button onclick="tambahObat()" class="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-4 py-2 rounded-lg text-sm">
+            Tambah
+        </button>
+    </div>
+
+    <!-- List Obat -->
+    <ul id="daftarObat" class="space-y-2">
+        <li class="text-xs text-gray-400 text-center py-2">Belum ada jadwal obat hari ini.</li>
+    </ul>
+</div>
+
+<script>
+function tambahObat() {
+    const nama = document.getElementById('namaObat').value.trim();
+    const jam = document.getElementById('jamObat').value;
+
+    if (!nama || !jam) {
+        alert("Masukkan nama obat dan jam minumnya!");
+        return;
+    }
+
+    const daftar = document.getElementById('daftarObat');
+    if (daftar.children[0]?.classList.contains('text-gray-400')) {
+        daftar.innerHTML = '';
+    }
+
+    const li = document.createElement('li');
+    li.className = "flex justify-between items-center p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm";
+    li.innerHTML = `
+        <div>
+            <span class="font-semibold text-gray-800">${nama}</span>
+            <span class="text-xs text-gray-500 block">Jam: ${jam}</span>
+        </div>
+        <button onclick="selesaiObat(this)" class="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 text-xs font-semibold px-3 py-1.5 rounded-md">
+            Sudah Diminum
+        </button>
+    `;
+
+    daftar.appendChild(li);
+    document.getElementById('namaObat').value = '';
+    document.getElementById('jamObat').value = '';
+}
+
+function selesaiObat(btn) {
+    const parent = btn.parentElement;
+    parent.classList.add('opacity-50', 'line-through');
+    btn.remove();
+}
+</script>
+
+<div class="bg-white p-6 rounded-2xl shadow-lg max-w-md mx-auto my-4 border border-slate-100">
+    <h3 class="font-bold text-gray-800 text-lg mb-3">Kalkulator BMR & Kalori Harian</h3>
+    
+    <div class="space-y-3">
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Jenis Kelamin</label>
+            <select id="gender" class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
+                <option value="pria">Pria</option>
+                <option value="wanita">Wanita</option>
+            </select>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+            <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Usia (Thn)</label>
+                <input type="number" id="usia" placeholder="25" class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Berat (Kg)</label>
+                <input type="number" id="bmrBerat" placeholder="60" class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Tinggi (Cm)</label>
+                <input type="number" id="bmrTinggi" placeholder="170" class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500">
+            </div>
+        </div>
+        <button onclick="hitungBMR()" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg text-sm">
+            Hitung Kalori
+        </button>
+    </div>
+
+    <div id="hasilBMR" class="mt-4 hidden p-3 bg-orange-50 rounded-lg text-center border border-orange-200">
+        <span class="text-xs text-orange-700 font-medium">Estimasi BMR Harian Anda:</span>
+        <div id="nilaiBMR" class="text-2xl font-extrabold text-orange-600">0 kcal</div>
+    </div>
+</div>
+
+<script>
+function hitungBMR() {
+    const gender = document.getElementById('gender').value;
+    const usia = parseFloat(document.getElementById('usia').value);
+    const berat = parseFloat(document.getElementById('bmrBerat').value);
+    const tinggi = parseFloat(document.getElementById('bmrTinggi').value);
+
+    if (!usia || !berat || !tinggi) {
+        alert("Lengkapi semua data BMR terlebih dahulu.");
+        return;
+    }
+
+    // Rumus Mifflin-St Jeor
+    let bmr = (10 * berat) + (6.25 * tinggi) - (5 * usia);
+    if (gender === 'pria') {
+        bmr += 5;
+    } else {
+        bmr -= 161;
+    }
+
+    document.getElementById('nilaiBMR').innerText = `${Math.round(bmr)} kcal`;
+    document.getElementById('hasilBMR').classList.remove('hidden');
+}
+</script>
+
+<div class="bg-white p-6 rounded-2xl shadow-lg max-w-md mx-auto my-4 border border-slate-100">
+    <h3 class="font-bold text-gray-800 text-lg mb-2">Jurnal Mood Harian</h3>
+    <p class="text-xs text-gray-500 mb-4">Bagaimana perasaan Anda hari ini?</p>
+
+    <!-- Pilihan Emoji Mood -->
+    <div class="flex justify-between text-2xl mb-4">
+        <button onclick="pilihMood('Bahagia 😃')" class="hover:scale-125 transition">😃</button>
+        <button onclick="pilihMood('Biasa Aja 😐')" class="hover:scale-125 transition">😐</button>
+        <button onclick="pilihMood('Lelah 😫')" class="hover:scale-125 transition">😫</button>
+        <button onclick="pilihMood('Stres 😡')" class="hover:scale-125 transition">😡</button>
+        <button onclick="pilihMood('Sedih 😢')" class="hover:scale-125 transition">😢</button>
+    </div>
+
+    <div id="statusMood" class="text-center text-sm text-gray-700 font-medium hidden p-2 bg-purple-50 rounded-lg border border-purple-200">
+        Tersimpan: <span id="textMood" class="font-bold text-purple-700"></span>
+    </div>
+</div>
+
+<script>
+function pilihMood(mood) {
+    document.getElementById('textMood').innerText = mood;
+    document.getElementById('statusMood').classList.remove('hidden');
+}
+</script>
