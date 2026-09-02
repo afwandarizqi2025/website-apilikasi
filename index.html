@@ -3,6 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - HealthCare Plus</title>
+    <!-- Framework Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
+
+    <!-- Card Login -->
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden border border-slate-100">
+        
+        <!-- Header Branding -->
+        <div class="bg-teal-600 p-8 text-center text-white">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-white/10 rounded-full mb-3 backdrop-blur-sm">
+                <!-- Icon Kesehatan (Cross / Heart) -->
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold">HealthCare Plus</h1>
+            <p class="text-teal-100 text-sm mt-1">Masuk untuk memantau kesehatan Anda</p>
+        </div>
+
+        <!-- Form Login -->
+        <form id="formLogin" onsubmit="handleLogin(event)" class="p-8 space-y-5">
+            
+            <!-- Alert Pesan Error -->
+            <div id="alertError" class="hidden bg-rose-50 border border-rose-200 text-rose-600 text-sm p-3 rounded-xl">
+                Email atau kata sandi tidak boleh kosong!
+            </div>
+
+            <!-- Input Email / Username -->
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Email / Username</label>
+                <div class="relative">
+                    <input type="email" id="email" placeholder="nama@email.com" required
+                        class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition duration-200">
+                    <div class="absolute left-3 top-3 text-slate-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Password -->
+            <div>
+                <div class="flex justify-between items-center mb-1">
+                    <label class="block text-sm font-medium text-slate-700">Kata Sandi</label>
+                    <a href="#" class="text-xs text-teal-600 hover:text-teal-700 font-medium">Lupa sandi?</a>
+                </div>
+                <div class="relative">
+                    <input type="password" id="password" placeholder="••••••••" required
+                        class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition duration-200">
+                    <div class="absolute left-3 top-3 text-slate-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checkbox Remember Me -->
+            <div class="flex items-center">
+                <input type="checkbox" id="remember" class="w-4 h-4 text-teal-600 border-slate-300 rounded focus:ring-teal-500">
+                <label for="remember" class="ml-2 text-xs text-slate-600">Ingat saya di perangkat ini</label>
+            </div>
+
+            <!-- Tombol Submit -->
+            <button type="submit" 
+                class="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 rounded-xl shadow-md shadow-teal-100 transition duration-200">
+                Masuk ke Akun
+            </button>
+
+            <!-- Footer / Link Registrasi -->
+            <div class="text-center pt-2">
+                <p class="text-xs text-slate-500">
+                    Belum punya akun? 
+                    <a href="#" class="text-teal-600 font-semibold hover:underline">Daftar sekarang</a>
+                </p>
+            </div>
+        </form>
+    </div>
+
+    <!-- Script Logika Form -->
+    <script>
+        function handleLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const alertError = document.getElementById('alertError');
+
+            if (!email || !password) {
+                alertError.classList.remove('hidden');
+                return;
+            }
+
+            alertError.classList.add('hidden');
+
+            // Simpan sesi login sederhana ke LocalStorage
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('isLoggedIn', 'true');
+
+            alert('Login Berhasil! Mengalihkan ke dashboard...');
+            
+            // Redirect ke halaman utama (misalnya index.html)
+            // window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplikasi Kesehatan Personal</title>
     <!-- Framework Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
